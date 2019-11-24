@@ -47,6 +47,10 @@ before_action :set_one_month, only: :show
     redirect_to users_url
   end
   
+  def search
+    @users = set_search.paginate(page: params[:page])
+  end
+  
   def update_basic_info
     if @user.update_attributes(basic_info_params)
       flash[:success] = "#{@user.name}の基本情報を更新しました。"
@@ -64,6 +68,14 @@ before_action :set_one_month, only: :show
     
     def basic_info_params
       params.require(:user).permit(:department, :basic_time, :work_time)
+    end
+    
+    def set_search #ここでのself.はUser.を意味する
+      if params[:user].present? && params[:user][:name]
+        User.where('name LIKE ?', "%#{params[:user][:name]}%") #検索とnameの部分一致を表示。#User.は省略
+      else
+        User.all #全て表示。#User.は省略
+      end
     end
 
 end
