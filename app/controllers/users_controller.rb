@@ -32,7 +32,7 @@ before_action :set_one_month, only: :show
   end
   
   def update
-    @user = User.find(params[:id])
+   
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to @user
@@ -55,7 +55,7 @@ before_action :set_one_month, only: :show
   end
   
   def update_basic_info
-    @user = User.find(params[:id])
+    
     if @user.update_attributes(basic_info_params)
       flash[:success] = "#{@user.name}の基本情報を更新しました。"
       redirect_to users_url
