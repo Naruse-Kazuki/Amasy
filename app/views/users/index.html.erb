@@ -15,14 +15,9 @@
     <% @users.each do |user| %>
       <tr>
         <td>
-          <% if current_user.admin? %>
-            <%= link_to user.name, user %>
-          <% else %>
-            <%= user.name %>
-          <% end %>
-
+            <%= link_to user.name, user %> |
           <% if current_user.admin? && !current_user?(user) %>
-            <%= link_to "基本情報編集", edit_basic_info_user_path(user), remote: true %>
+            <%= link_to "基本情報編集", edit_basic_info_user_path(user) %> |
             <%= link_to "削除", user, method: :delete,
                 data: { confirm: "削除してよろしいですか？" } %>
           <% end %>
@@ -34,4 +29,4 @@
 </div>
 
 <!--モーダルウインドウ表示-->
-<div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<!--<div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>-->
