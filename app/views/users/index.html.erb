@@ -1,5 +1,7 @@
 <% provide(:title, 'All Users') %>
-<h1>全てのユーザー</h1>
+<% provide(:class_text, 'user--edit') %>
+<% provide(:button_text, '更新') %>
+<h1>ユーザ一覧</h1>
 
 <div>
   <%= form_with url: search_users_path, model: User.new, method: :get, local: true do |f| %>
@@ -8,25 +10,40 @@
   <% end %>
 </div>
 
+<%= link_to "CSV", users_path(format: :csv), class: "btn btn-primary" %>
+
+<%= form_tag import_users_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "インポート" %>
+<% end %>
+
 <div class="col-md-10 col-md-offset-1">
-  <%= will_paginate %>
+  <%= will_paginate @user %>
   <table class="table table-condensed table-hover" id="table-users">
-
-    <% @users.each do |user| %>
-      <tr>
-        <td>
-            <%= link_to user.name, user %> |
-          <% if current_user.admin? && !current_user?(user) %>
-            <%= link_to "基本情報編集", edit_basic_info_user_path(user) %> |
+    
+    <% @user.each do |user| %>
+        <tr>
+          <td>
+            <%= user.name %><br>
             <%= link_to "削除", user, method: :delete,
-                data: { confirm: "削除してよろしいですか？" } %>
-          <% end %>
-        </td>
-      </tr>
+              data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary btn-sm" %><br>
+              
+            <div class="accordion">
+              <div class="header-edit" id="h-edit">
+                <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#edit<%= user.id %>" role="button" aria-expanded="false" aria-controls="edit">編集</a>
+              </div>
+              <div id="edit<%= user.id %>" class="collapse" aria-labelledby="h-edit" >
+                <div class = "body-edit">
+                  <%= form_with(model: user, local: true, url: user_path(user.id), method: :patch) do |f| %>
+                    <%= render 'form', f: f %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
     <% end %>
+    
   </table>
-  <%= will_paginate %>
+  <%= will_paginate @user %>
 </div>
-
-<!--モーダルウインドウ表示-->
-<!--<div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>-->

@@ -6,13 +6,22 @@ before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_ba
 before_action :set_one_month, only: :show
 
   def index
-    @users = User.paginate(page: params[:page])
+    @user = User.paginate(page: params[:page], per_page: 10)
+  end
+  
+  def import
+    # fileはtmpに自動で一時保存される
+    User.import(params[:file])
+    flash[:success] = "ユーザ情報をインポートしました。"
+    redirect_to users_url
   end
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
-
+  
+  
+  
   def new
     @user = User.new
   end
@@ -21,7 +30,7 @@ before_action :set_one_month, only: :show
     @user = User.new(user_params)
     if @user.save
       log_in @user # 保存成功後、ログインします。
-      flash[:success] = '新規作成に成功しました。'
+      flash[:success] = "新規作成に成功しました。"
       redirect_to @user
     else
       render :new
@@ -29,16 +38,19 @@ before_action :set_one_month, only: :show
   end
 
   def edit
+    @user = User.find(params[:user_id])
   end
   
   def update
    
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to @user
+      redirect_to users_url
     else
-      render :edit      
+      
+      redirect_to users_url
     end
+    
   end
   
   def destroy
@@ -48,7 +60,7 @@ before_action :set_one_month, only: :show
   end
   
   def search
-    @users = set_search.paginate(page: params[:page])
+    @user = set_search.paginate(page: params[:page], per_page: 10)
   end
   
   def edit_basic_info
@@ -65,14 +77,18 @@ before_action :set_one_month, only: :show
     end
   end
   
+  
+  
+  
+  
  private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation, :employee_number, :uid)
     end
     
     def basic_info_params
-      params.require(:user).permit(:department, :basic_time, :work_time)
+      params.require(:user).permit(:department, :basic_time, :designated_work_start_time, :designated_work_end_time)
     end
     
     def set_search #ここでのself.はUser.を意味する

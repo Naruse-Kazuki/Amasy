@@ -16,6 +16,12 @@ gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
 gem 'ransack'
 gem 'rounding'
+gem 'hirb'
+gem 'hirb-unicode'
+gem 'pry-rails'
+gem 'pry-doc'
+gem 'pry-byebug'
+gem 'roo'
 
 group :development, :test do
   gem 'sqlite3'
