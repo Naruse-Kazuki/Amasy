@@ -42,15 +42,13 @@ before_action :set_one_month, only: :show
   end
   
   def update
-   
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to users_url
+      redirect_to user_url
     else
       
-      redirect_to users_url
+      redirect_to user_url
     end
-    
   end
   
   def destroy
@@ -76,7 +74,6 @@ before_action :set_one_month, only: :show
       render :edit
     end
   end
-  
   
   
   

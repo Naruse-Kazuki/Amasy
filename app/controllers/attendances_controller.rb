@@ -56,6 +56,11 @@ class AttendancesController < ApplicationController
     @attendances = Attendance.all
   end
   
+  def log
+    @user = User.find(params[:id])
+    @attendances = Attendance.all
+  end
+  
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params

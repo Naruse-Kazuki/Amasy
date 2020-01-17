@@ -34,6 +34,10 @@ class ApplicationController < ActionController::Base
     redirect_to root_url unless current_user.admin?
   end
   
+  def superior_user
+    redirect_to root_url unless current_user.superior?
+  end
+  
   def admin_user_sub
     if current_user.admin?
       true

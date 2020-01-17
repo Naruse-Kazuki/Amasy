@@ -24,9 +24,54 @@
   </table>
 </div>
 
-<div class="btn-users-show">
-  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-default" %>
+
+<div><a data-toggle="modal" data-target="#modal1">所属長承認のお知らせ</a></div>
+<div><a data-toggle="modal" data-target="#modal2">勤怠変更申請のお知らせ</a></div>
+<div class="mar-bottom"><a data-toggle="modal" data-target="#modal3">残業申請のお知らせ</a></div>
+
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5 class="modal-title" id="label1">【<%= @user.name %>からの一ヶ月分勤怠承認】</h5>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr>
+              <td>月</td>
+              <td>指示者確認</td>
+              <td>変更</td>
+              <td>勤怠を確認する</td>
+            </tr>
+          </thead>
+          <body>
+            <tr>
+              <td><%= l(@first_day, format: :middle) %></td>
+              <td></td>
+              <td></td>
+              <td><%= link_to "確認", class: "btn btn-primary" %></td>
+            </tr>
+          </body>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">変更を送信する</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<div class="btn-users-show">
+  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
+  <%= link_to "CSV", user_path(format: :csv), class: "btn btn-primary" %>
+</div>
+
+<%= link_to "勤怠ログ", attendances_log_user_path, class: "btn btn-primary" %>
 
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -89,6 +134,11 @@
             <% end %>
           </td>
           <td><%= day.note %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       <% end %>
     </tbody>
@@ -96,16 +146,22 @@
     <tfoot>
       <!--rowspan:縦結合、colspan：横結合-->
       <tr>
-        <td colspan="2">累計日数</td>
-        <td colspan="3">総合勤務時間</td>
-        <td colspan="3">累計在社時間</td>
-        <td rowspan="2"></td>
-        <td rowspan="2"></td>
-      </tr>
-      <tr>
         <td colspan="2"><%= @attendances.count %></td>
-        <td colspan="3"><%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>
-        <td colspan="3"><%= format("%.2f", @total_working_times.to_f) %></td>
+        <td colspan="6"><%= format_basic_info(@user.basic_time).to_f * @worked_sum %></td>
+        <td><%= format("%.2f", @total_working_times.to_f) %></td>
+        <td colspan="5"></td>
+        <td>
+          所属長確認<%= %><br>
+          <%= form_with(model: @user, local: true) do |f| %>
+            <%= f.select :superior, User.where(superior: true).where.not(id: current_user).map(&:name), :prompt => true %><br>
+            <%= f.submit "申請", class: "btn btn-primary" %>
+          <!--  <% if @user.changed? %>-->
+          <!--    <% f.select :request['2'] %>-->
+          <!--  <% else %>-->
+              
+          <!--  <% end %>-->
+          <% end %>
+        </td>
       </tr>
     </tfoot>
     
