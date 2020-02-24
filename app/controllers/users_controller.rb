@@ -4,6 +4,7 @@ before_action :logged_in_user, only: [:show, :edit, :update, :destroy, :edit_bas
 before_action :correct_user, unless: :admin_user_sub, only: [:edit, :update, :show, :update_one_month]
 before_action :admin_user, only: [:index, :destroy, :edit_basic_info, :update_basic_info]
 before_action :set_one_month, only: :show
+before_action :set_superior, only: [:show, :edit, :update]
 
   def index
     @user = User.paginate(page: params[:page], per_page: 10)
@@ -19,7 +20,6 @@ before_action :set_one_month, only: :show
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
-  
   
   
   def new
@@ -38,7 +38,7 @@ before_action :set_one_month, only: :show
   end
 
   def edit
-    @user = User.find(params[:user_id])
+    @user = User.find(params[:id])
   end
   
   def update
@@ -46,7 +46,6 @@ before_action :set_one_month, only: :show
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to user_url
     else
-      
       redirect_to user_url
     end
   end
@@ -75,17 +74,31 @@ before_action :set_one_month, only: :show
     end
   end
   
-  
-  
+  def edit_month
+    
+  end
+
+  def update_month
+    if @user.update
+      flash[:success] = "#{@superior}に申請しました。"
+      redirect_to user_url
+    else
+      redirect_to user_url
+    end
+  end
   
  private
 
     def user_params
-      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation, :employee_number, :uid)
+      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation, :employee_number, :uid, :request)
     end
     
     def basic_info_params
       params.require(:user).permit(:department, :basic_time, :designated_work_start_time, :designated_work_end_time)
+    end
+    
+    def attendances_params
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
     end
     
     def set_search #ここでのself.はUser.を意味する
@@ -94,6 +107,10 @@ before_action :set_one_month, only: :show
       else
         User.all #全て表示。#User.は省略
       end
+    end
+    
+    def set_superior
+      @superior = User.where(superior: true).where.not(id: current_user).select(:name).map(&:name)
     end
 
 end

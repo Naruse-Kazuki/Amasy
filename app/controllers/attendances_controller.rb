@@ -67,7 +67,13 @@ class AttendancesController < ApplicationController
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
     end
   
+    def user_params
+      params.require(:user).permit(:name, :email, :department, :password, :password_confirmation, :employee_number, :uid)
+    end
+    
   # beforeフィルター
+  
+
 
     # 管理権限者、または現在ログインしているユーザーを許可します。
     def admin_or_correct_user

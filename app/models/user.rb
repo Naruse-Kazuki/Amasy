@@ -18,6 +18,8 @@ class User < ApplicationRecord
   validates :uid, presence: true, uniqueness: true, length: { maximum: 50 }
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  
+  enum request: {"申請中" => 1, "承認" => 2, "否認" => 3}
  
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)

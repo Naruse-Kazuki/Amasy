@@ -22,4 +22,11 @@ class Attendance < ApplicationRecord
     end
   end
   
+  def self.update_month(attendances_params)
+    attendances_params.to.to_h.map do |id, attendance_param|
+      attendance = self.find(id)
+      attendance.update_attributes(attendance_param)
+    end
+  end
+  
 end
