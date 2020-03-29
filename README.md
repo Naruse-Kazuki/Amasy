@@ -1,5 +1,6 @@
 # Amasy
 This system manages attendance.
+Amasy is an abbreviation of the attendance management system.
 
 ## Description
 Attendance and departure are reflected with one click (in 15-minute increments), and the time spent in the office, the number of days worked, etc. are automatically calculated and output. It is also possible to edit attendance information at once.
